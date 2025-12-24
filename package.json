@@ -1,16 +1,32 @@
 {
-  "name": "@lib/simple_sqlite",
+  "name": "@lib/simple-sqlite",
   "version": "1.0.0",
   "description": "Easily create SQLite queries in Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests yet\""
   },
-  "keywords": [],
+  "keywords": [
+    "sqlite",
+    "sqlite3",
+    "database",
+    "nodejs",
+    "query-builder"
+  ],
   "author": "Gustavo Alejandro Perez S",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "better-sqlite3": "^12.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gxstavo-dev/Simple-sqlite.git"
+  },
+  "exports": {
+    ".": "./index.js"
   }
 }
