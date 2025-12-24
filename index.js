@@ -154,6 +154,68 @@ function Show({ table, columns = [], data = [], where = [] }) {
   }
 }
 
+/*
+sintaxis test 
+
+UPDATE ${tabla} SET $(columns) WHERE ${condition}
+
+conn.Update({
+  table : "ejemplo",
+  columns : ["nombre" , "activo"],
+  dataColumn : ["gustavo" , 1],
+  where : ["id"],
+  dataCondition : [1]
+})
+
+
+*/
+// funcion para actualizar datos de una tabla
+// necesitamos 4 arrays para la comprobacion de datos
+function Update({
+  table,
+  columns = [],
+  dataColumn = [],
+  where = [],
+  dataCondition = [],
+}) {
+  validate(table); // si el nombre es valido => cumple el regex
+  strings(table); // si es string
+  // si son arrays
+  arr(columns); 
+  arr(where);
+  arr(dataColumn), arr(dataCondition);
+  // verificar el tamaño sea igual
+  lengths(columns, dataColumn);
+  lengths(where, dataCondition);
+
+  // verificar si es string cada dato ingresado
+  for (const col of columns) {
+    strings(col);
+  }
+  for (const wh of where) {
+    strings(wh);
+  }
+
+  // evitar inyecciones sqlite
+  const condition1 = columns.map((col) => `${col} = ? `).join(", ");
+  const condition2 = where.map((wh) => `${wh} = ? `).join(" AND ");
+
+  const query = `UPDATE ${table} SET ${condition1} WHERE ${condition2}`;
+
+  try {
+    conexion.prepare(query).run([...dataColumn, ...dataCondition]);
+    return {
+      success: true,
+      message: "consulta con existe",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error,
+    };
+  }
+}
+
 module.exports = {
   Connexion,
   Table,
@@ -161,4 +223,5 @@ module.exports = {
   Delete,
   ShowAll,
   Show,
+  Update
 };
