@@ -104,7 +104,7 @@ function Delete({ table, where = [], operator, data = [] }) {
       conditions = where.map((wh) => `${wh} = ?`).join(" OR ");
       break;
     default:
-      throw new Error("No se permite ingresar otro tipo de condicion");
+      throw new Error("Error only accepts condition OR , AND");
   }
 
   //if (operator === "AND" || operator === undefined) {
@@ -157,7 +157,7 @@ function ShowAll({ table }) {
 }
 // mostrar dato especifico de una tabla
 
-function Show({ table, columns = [], data = [], where = [] }) {
+function Show({ table, columns = [], data = [], where = [], operator }) {
   // chequeo de parametros
   strings(table);
   validate(table);
@@ -166,17 +166,40 @@ function Show({ table, columns = [], data = [], where = [] }) {
   arr(where); // si lo que envia el usuario es una array
   lengths(data, where); // si son del mismo tamañp
   // permitir varias condiciones
-  const conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
+
+  // nuestro operador puede ser tanto como AND , OR y indefiido
+
+  let conditions;
+
+  // version mas organizada que la idea anterior de abajo
+  switch (operator) {
+    case "AND":
+      conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
+      break;
+    case undefined:
+      conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
+      break;
+    case "OR":
+      conditions = where.map((wh) => `${wh} = ?`).join(" OR ");
+      break;
+    default:
+      throw new Error("Error only accepts condition OR , AND");
+  }
+
   const query = `SELECT ${columns} FROM ${table} WHERE ${conditions}`;
 
   try {
     const lista = conexion.prepare(query).get(...data);
     // si no existe indica que no hau coincidencias
-    if (!lista.length > 0) console.log("There are no matches");
 
+    let mensaje = "Matches found";
+    if (lista === undefined) {
+      mensaje = "No matches were found";
+    }
     return {
       success: true,
       list: lista,
+      message: mensaje,
     };
   } catch (error) {
     return {
@@ -208,6 +231,7 @@ function Update({
   columns = [],
   dataColumn = [],
   where = [],
+  operator,
   dataCondition = [],
 }) {
   validate(table); // si el nombre es valido => cumple el regex
@@ -233,11 +257,30 @@ function Update({
   if (where.length === 0) {
     throw new Error("UPDATE without WHERE is not allowed");
   }
+
+  // nuestro operador puede ser tanto como AND , OR y indefiido
+
+  let conditions;
+
+  // version mas organizada que la idea anterior de abajo
+  switch (operator) {
+    case "AND":
+      conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
+      break;
+    case undefined:
+      conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
+      break;
+    case "OR":
+      conditions = where.map((wh) => `${wh} = ?`).join(" OR ");
+      break;
+    default:
+      throw new Error("Error only accepts condition OR , AND");
+  }
+
   // evitar inyecciones sqlite
   const condition1 = columns.map((col) => `${col} = ? `).join(", ");
-  const condition2 = where.map((wh) => `${wh} = ? `).join(" AND ");
 
-  const query = `UPDATE ${table} SET ${condition1} WHERE ${condition2}`;
+  const query = `UPDATE ${table} SET ${condition1} WHERE ${conditions}`;
 
   try {
     conexion.prepare(query).run([...dataColumn, ...dataCondition]);
