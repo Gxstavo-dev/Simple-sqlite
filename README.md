@@ -1,11 +1,11 @@
-# Simple sqlite
+# Quick-sqlite
 
 Una forma mas sencilla de realizar consultas SQLITE en Nodejs
 
 ## Instalacion
 
 ```bash
-npm install simple-sqlite
+npm install quick-sqlite
 ```
 
 ## Documentacion
@@ -23,7 +23,7 @@ To learn how to use this library, click here to view the documentation in Englis
 ## Ejemplo de uso
 
 ```javascript
-const conn = require("simple-sqlite");
+const conn = require("quick-sqlite");
 conn.Connexion("test.db");
 
 const consulta = conn.SelectLike({

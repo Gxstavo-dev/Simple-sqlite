@@ -1,5 +1,5 @@
 {
-  "name": "simple-sqlite",
+  "name": "quick-sqlite",
   "version": "1.0.0",
   "description": "Easily create SQLite queries in Node.js",
   "main": "index.js",

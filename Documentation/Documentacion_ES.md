@@ -1,12 +1,12 @@
-# Documentacion de Simple SQLite
+# Documentacion de Quick-sqlite
 
 Bienvenido a la seccion de documentacion te explicare que alcance tiene esta libreria por el momento y sintaxis de la misma
 
-Simple SQLite es una libreria ligera para Node.js basada en better-sqlite3, que facilita el uso de SQLite mediante una API simple y segura, ideal para proyectos pequeños o educativos.
+Quick-sqlite es una libreria ligera para Node.js basada en better-sqlite3, que facilita el uso de SQLite mediante una API simple y segura, ideal para proyectos pequeños o educativos.
 
 ## Formato de retorno
 
-La mayoria de los metodos de **Simple SQLite** retornan un objeto con la siguiente estructura:
+La mayoria de los metodos de **Quick-sqlite** retornan un objeto con la siguiente estructura:
 
 ```javascript
 {
@@ -40,10 +40,10 @@ Aun no se integra los operadores aritmeticos y relacionales como: >, <, >=, <=
 
 ## Instalacion
 
-Comando para instalar la libreria Simple-sqlite
+Comando para instalar la libreria quick-sqlite
 
 ```bash
-npm install simple-sqlite
+npm install quick-sqlite
 ```
 
 ### Seguridad
@@ -66,7 +66,7 @@ SELECT * FROM users WHERE name = ?;
 Si no existe la base de datos la creara y si existe la buscara y la usara
 
 ```javascript
-const sqlite = require("simple-sqlite");
+const sqlite = require("quick-sqlite");
 // Esto inicializa la conexión a la base de datos
 sqlite.Connexion("test.db");
 ```
