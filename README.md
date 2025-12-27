@@ -2,6 +2,8 @@
 
 Una forma mas sencilla de realizar consultas SQLITE en Nodejs
 
+![npm version](https://img.shields.io/npm/v/quick-sqlite.svg)
+
 ## Instalacion
 
 ```bash
