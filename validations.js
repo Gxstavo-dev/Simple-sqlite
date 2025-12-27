@@ -25,9 +25,16 @@ function lengths(arr1, arr2) {
   }
 }
 
+function validationLike(text) {
+  if (!/^[%a-zA-Z0-9]*$/.test(text)) {
+    throw new Error("Error de sintaxis no se aceptan esos tipos de simbolos");
+  }
+}
+
 module.exports = {
   validate,
   arr,
   strings,
   lengths,
+  validationLike,
 };

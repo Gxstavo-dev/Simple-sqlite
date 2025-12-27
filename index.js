@@ -1,6 +1,12 @@
 const Database = require("better-sqlite3");
 // traemos la funciones que validaran nuestros paremetros
-const { validate, arr, strings, lengths } = require("./validations.js");
+const {
+  validate,
+  arr,
+  strings,
+  lengths,
+  validationLike,
+} = require("./validations.js");
 
 // creamos una conexion que iniciara en null ya que no se a creado nada
 // esto lo hacemos para poder guardar la conexion y el usuario no tenga que escribirla
@@ -136,7 +142,7 @@ function Delete({ table, where = [], operator, data = [] }) {
 }
 
 // funcion para mostrar todo el contenido de la tabla
-function ShowAll({ table }) {
+function SelectAll({ table }) {
   validate(table);
   strings(table);
   const query = `SELECT * FROM ${table}`;
@@ -157,7 +163,7 @@ function ShowAll({ table }) {
 }
 // mostrar dato especifico de una tabla
 
-function Show({ table, columns = [], data = [], where = [], operator }) {
+function Select({ table, columns = [], data = [], where = [], operator }) {
   // chequeo de parametros
   strings(table);
   validate(table);
@@ -171,7 +177,6 @@ function Show({ table, columns = [], data = [], where = [], operator }) {
 
   let conditions;
 
-  // version mas organizada que la idea anterior de abajo
   switch (operator) {
     case "AND":
       conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
@@ -200,6 +205,65 @@ function Show({ table, columns = [], data = [], where = [], operator }) {
       success: true,
       list: lista,
       message: mensaje,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error,
+    };
+  }
+}
+
+/*
+sintaxis de guia para estructurarlo
+
+const e = db.SelectLike({
+  table : "ejemplo",
+  columns : ["id","name"],
+  where : ["name"],
+  operator : "OR"
+
+  const query = `SELECT ${columns} FROM ${table} WHERE ${where} LIKE ` .join(conditions)
+
+
+})
+*/
+
+// funcion que permite usar LIKE como condicion y validar solo el los simbolos que se necesitan para la LIKE
+function SelectLike({ table, columns = [], where = [], data = [], operator }) {
+  strings(table);
+  validate(table);
+  arr(columns);
+  arr(data);
+  arr(where);
+  lengths(where, data);
+  for (const d of data) {
+    validationLike(d);
+  }
+
+  let conditions;
+
+  switch (operator) {
+    case "AND":
+      conditions = where.map((wh) => `${wh} LIKE ? `).join(" AND ");
+      break;
+    case "OR":
+      conditions = where.map((wh) => `${wh} LIKE ? `).join(" OR ");
+      break;
+    case undefined:
+      conditions = where.map((wh) => `${wh} LIKE ? `).join(" AND ");
+      break;
+    default:
+      throw new Error("Error only accepts condition OR , AND");
+  }
+
+  const query = `SELECT ${columns} FROM ${table} WHERE ${conditions}`;
+
+  try {
+    const lista = conexion.prepare(query).all(...data);
+    return {
+      success: true,
+      list: lista,
     };
   } catch (error) {
     return {
@@ -262,7 +326,6 @@ function Update({
 
   let conditions;
 
-  // version mas organizada que la idea anterior de abajo
   switch (operator) {
     case "AND":
       conditions = where.map((wh) => `${wh} = ?`).join(" AND ");
@@ -296,12 +359,35 @@ function Update({
   }
 }
 
+// funcioncion para eliminar tablas
+function DropTable({ table }) {
+  strings(table);
+  validate(table);
+
+  const query = `DROP TABLE IF EXISTS ${table}`;
+
+  try {
+    conexion.prepare(query).run();
+    return {
+      success: true,
+      message: "Delete tabla is success",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error,
+    };
+  }
+}
+
 module.exports = {
   Connexion,
   Table,
   Insert,
   Delete,
-  ShowAll,
-  Show,
+  SelectAll,
+  Select,
+  SelectLike,
   Update,
+  DropTable,
 };
