@@ -2,7 +2,6 @@
 
 Una forma mas sencilla de realizar consultas SQLITE en Nodejs
 
-
 ## Instalacion
 
 ```bash
@@ -27,7 +26,7 @@ To learn how to use this library, click here to view the documentation in Englis
 const conn = require("simple-sqlite");
 conn.Connexion("test.db");
 
-const consulta = db.SelectLike({
+const consulta = conn.SelectLike({
   table: "alumnos",
   columns: ["id", "name"],
   where: ["name"],
